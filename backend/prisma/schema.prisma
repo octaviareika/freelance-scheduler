@@ -1,0 +1,44 @@
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+
+  Availabilities Availability[] 
+  appointmentsAsFreelancer Appointment[] @relation("FreelancerAppointments")
+  appointmentsAsClient     Appointment[] @relation("ClientAppointments")
+
+  @@map("users")
+}
+
+model Appointment {
+  id        String   @id @default(uuid())
+  freelancerId  String 
+  clientId      String 
+  startTime     DateTime 
+  endTime       DateTime 
+}
+
+model Availability {
+  id        String   @id @default(uuid())
+  freelancerId  String 
+  dayOfWeek     Int 
+  startTime     DateTime 
+  endTime       DateTime 
+
+}
+
+enum UserRole {
+  CLIENT
+  FREELANCER
+}
